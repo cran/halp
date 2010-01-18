@@ -1,0 +1,9 @@
+* Released as halp_0.1.1 2010-01-18
+      added the function 'halp.options' as interface for getting/setting options
+         instead of the S3-list '.halp.Options'
+
+* Unreleased halp_0.1 2010-01-16
+      basic version
+
+* Unreleased halp_0.0.1 2010-01-15
+      project started
