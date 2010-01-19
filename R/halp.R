@@ -1,6 +1,6 @@
 ".halp.Options" <- list(
                       "pattern" = '^[[:space:]]*#![[:space:]]*',
-                      "screen.pre" = " :: ",
+                      "screen.pre" = "",
                       "pager.minLines" = 10,
                       "pager.pre" = ""
                    )
@@ -67,18 +67,22 @@
    # (each line is one vector element)
    fun.halp.raw <- gsub(opt("pattern"), "", fun.source[grep(opt("pattern"), fun.source)])
    
-   if ((is.null(use.pager) && all(use.pager)) || (is.null(use.pager) && length(fun.halp.raw) > opt("pager.minLines"))) {
-      # show the halps in the pager (must be done via temporary file)
-      files <- tempfile()
-      if (is.null(files)) {
-         stop("Could not acquire temporary filename for pager display")
+   if (length(fun.halp.raw) > 0) {
+      if ((length(use.pager) > 0 && all(use.pager)) || (length(use.pager) == 0 && length(fun.halp.raw) >= opt("pager.minLines"))) {
+         # show the halps in the pager (must be done via temporary file)
+         files <- tempfile()
+         if (is.null(files)) {
+            stop("Could not acquire temporary filename for pager display")
+         }
+         file <- files[1]
+         cat(paste(opt("pager.pre"), fun.halp.raw, collapse = "\n", sep = ""), "\n", sep = "", file = file)
+         file.show(file)
+      } else {
+         # show the halps on the screen
+         cat(paste(opt("screen.pre"), fun.halp.raw, collapse = "\n", sep = ""), "\n", sep = "")
       }
-      file <- files[1]
-      cat(paste(opt("pager.pre"), fun.halp.raw, collapse = "\n", sep = ""), "\n", sep = "", file = file)
-      file.show(file)
    } else {
-      # show the halps on the screen
-      cat(paste(opt("screen.pre"), fun.halp.raw, collapse = "\n", sep = ""), "\n", sep = "")
+      warning("The are no halp comments for function \'", fun.name, "\'", call. = FALSE)
    }
    
    invisible(fun.halp.raw)
